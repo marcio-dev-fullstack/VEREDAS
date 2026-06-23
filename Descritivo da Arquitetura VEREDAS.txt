@@ -1,0 +1,31 @@
+[11:26, 01/06/2026] Wellington Carvalho PE: o git https://github.com/sertaodigitalorg/VEREDAS/blob/main/README.md
+[11:27, 01/06/2026] Wellington Carvalho PE: grande parte está desenvolvido, tem que começar a testar, e também estou esperando chegar o raspberry para fazer o edge-embarcado, mas ja da para simular
+
+
+
+
+Descritivo da Arquitetura VEREDAS
+
+O VEREDAS é uma infraestrutura inteligente de mobilidade pública territorial, organizada em duas camadas principais: Core e Edge.
+
+O VEREDAS Core é o centro de gestão da plataforma. Ele pode ser instalado em nuvem ou em servidor próprio da instituição pública. Nele ficam o painel administrativo, a API principal, o controle de usuários, permissões, módulos de negócio, banco de dados PostgreSQL, indicadores e integrações com outros sistemas públicos.
+
+O VEREDAS Edge é a camada local, instalada em veículo, unidade operacional ou ambiente embarcado. Sua função é manter a operação funcionando mesmo com internet instável, coletando dados de GPS, sensores, telemetria, presença, rotas e eventos locais. O Edge possui cache local, painel de configuração e serviço de sincronização com o Core.
+
+As interfaces de usuário são separadas por perfil. O gestor utiliza o painel administrativo. O motorista utiliza um PWA próprio para execução da rota. Já passageiros, responsáveis, pacientes ou beneficiários acessam interfaces específicas conforme o módulo utilizado, como educação, saúde, assistência social ou transporte público.
+
+A arquitetura também prevê integração com sistemas externos, como e-Cidade, i-Educar, SIDI – Central Pública Digital e Plataforma 360 / Observatório Mandacaru. Assim, o VEREDAS não atua isolado; ele se conecta ao ecossistema digital do Sertão Digital e aos sistemas de gestão pública.
+
+Fluxo principal
+O gestor configura rotas, veículos, motoristas, unidades e usuários no Core.
+O motorista acessa o PWA do Condutor no celular ou tablet.
+O veículo ou unidade local opera com apoio do Edge, coletando localização, status e eventos.
+Caso a internet falhe, os dados ficam armazenados no cache local.
+Quando a conexão retorna, o Edge sincroniza os dados com o Core.
+O Core consolida informações, gera indicadores e alimenta dashboards.
+Os dados podem ser integrados com GRP, educação, atendimento cidadão e inteligência territorial.
+Visão estratégica
+
+O ponto forte dessa arquitetura é a resiliência territorial. No contexto do sertão e de municípios com conectividade irregular, depender apenas de uma aplicação online seria frágil. O modelo Core + Edge permite operação local, sincronização posterior e expansão modular.
+
+Minha recomendação é manter o VEREDAS como núcleo central de mobilidade pública, sem prender o nome a “escolar”. O transporte escolar deve ser apenas o primeiro módulo. Depois podem vir saúde, assistência social, transporte de pacientes, frota administrativa, rotas rurais, coleta seletiva, defesa civil e logística pública municipal.
