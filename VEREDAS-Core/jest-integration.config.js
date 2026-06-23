@@ -19,4 +19,13 @@ module.exports = {
     "<rootDir>/src/**/*.controller.ts",
   ],
   coverageReporters: ["json", "lcov", "text", "clover", "html"],
+  // Define o limite mínimo de cobertura. A execução dos testes falhará se não for atingido.
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
+  },
 };

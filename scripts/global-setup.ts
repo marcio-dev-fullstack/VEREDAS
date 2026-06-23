@@ -11,6 +11,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as bcrypt from "bcrypt";
 import { DataSource, DataSourceOptions } from "typeorm";
+import { User } from "../src/users/entities/user.entity";
 
 export default async () => {
   console.log("\n[GlobalSetup] Starting shared test containers...");
@@ -39,7 +40,8 @@ export default async () => {
   const dataSource = new DataSource({
     type: "postgres",
     url: config.db.url,
-    // Aponta para a localização das suas migrações
+    // Aponta para a localização das suas entidades e migrações
+    entities: [path.join(__dirname, "../src/**/*.entity.ts")],
     migrations: [path.join(__dirname, "../src/database/migrations/*.ts")],
     migrationsTableName: "migrations_test",
   } as DataSourceOptions);
@@ -50,22 +52,25 @@ export default async () => {
     await dataSource.runMigrations();
     console.log("[GlobalSetup] Migrations completed.");
 
-    // Cria os usuários de teste após as migrações
+    // Cria os usuários de teste usando o repositório do TypeORM
     console.log("[GlobalSetup] Seeding users...");
+    const userRepository = dataSource.getRepository(User);
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash("kitten", salt);
 
-    await dataSource.query(
-      'INSERT INTO "user" (username, password, roles) VALUES ($1, $2, $3), ($4, $5, $6)',
-      [
-        "jane_admin",
-        hashedPassword,
-        "{admin}", // Formato de array para PostgreSQL
-        "john_user",
-        hashedPassword,
-        "{user}",
-      ],
-    );
+    const adminUser = userRepository.create({
+      username: "jane_admin",
+      password: hashedPassword,
+      roles: ["admin"],
+    });
+
+    const commonUser = userRepository.create({
+      username: "john_user",
+      password: hashedPassword,
+      roles: ["user"],
+    });
+
+    await userRepository.save([adminUser, commonUser]);
     console.log("[GlobalSetup] Database seeded successfully.");
   } finally {
     if (dataSource.isInitialized) {
